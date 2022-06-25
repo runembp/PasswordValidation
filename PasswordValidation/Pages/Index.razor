@@ -1,6 +1,11 @@
 ﻿@page "/"
 
-<form>
+@if (PasswordValidated)
+{
+    <p class="border">PASSWORD VALIDATED</p>
+}
+
+<div>
     <fieldset class="border p-3">
         <p>Password Validation</p>
         <label>
@@ -13,27 +18,98 @@
             Password #2
         </label>
         <br/>
-        <input type="password" @bind="@_password2" @bind:event="oninput" onchange="@ValidatePassword()" />
+        <input type="password" @bind="@_password2" @bind:event="oninput" onchange="@ValidatePassword()"/>
     </fieldset>
-    
-    <br/>
-    
-    <p>Passwords must be the same</p>
-    <p>Passwords must be atleast 8 digits long</p>
-    <p>Passwords must contain atleast 1 number</p>
-    <p>Passwords must contain atleast 1 special character</p>
 
-</form>
+    <br/>
+
+    <p style="@_equalPasswords">Password must be the same</p>
+    <p style="@_minimumPasswordLength">Password must be atleast 8 digits long</p>
+    <p style="@_passwordContainsCapitalLetter">Password must contain atleast 1 capital letter</p>
+    <p style="@_passwordContainsNumber">Password must contain atleast 1 number</p>
+    <p style="@_passwordContainsSpecialCharacter">Password must contain atleast 1 special character</p>
+
+</div>
+
+<div class="border">
+    <p>@_password1</p>
+    <p>@_password2</p>
+</div>
 
 @code
 {
-    private string _password1 = string.Empty; 
+    private string _password1 = string.Empty;
     private string _password2 = string.Empty;
+    private string _equalPasswords = "color: grey";
+    private string _minimumPasswordLength = "color: grey";
+    private string _passwordContainsNumber = "color: grey";
+    private string _passwordContainsCapitalLetter = "color: grey";
+    private string _passwordContainsSpecialCharacter = "color: grey";
+    private bool PasswordValidated { get; set; }
 
     private Task ValidatePassword()
     {
-        Console.WriteLine("Boop");
-        
+        var equalPasswords = false;
+        var minimumPasswordLength = false;
+        var passwordContainsNumber = false;
+        var passwordContainsCapitalLetter = false;
+        var passwordContainsSpecialCharacter = false;
+
+        if (_password1 != string.Empty && _password2 != string.Empty && _password1 == _password2)
+        {
+            _equalPasswords = "color: green";
+            equalPasswords = true;
+        }
+        else
+        {
+            _equalPasswords = "color: grey";
+        }
+
+        if (_password1.Length >= 8 && _password2.Length >= 8)
+        {
+            _minimumPasswordLength = "color: green";
+            minimumPasswordLength = true;
+        }
+        else
+        {
+            _minimumPasswordLength = "color: grey";
+        }
+
+        if (_password1.Any(char.IsUpper) && _password1.Any(char.IsLower) && _password2.Any(char.IsUpper) && _password2.Any(char.IsLower))
+        {
+            _passwordContainsCapitalLetter = "color: green";
+            passwordContainsCapitalLetter = true;
+        }
+        else
+        {
+            _passwordContainsCapitalLetter = "color: grey";
+        }
+
+        if (_password1.Any(char.IsDigit) && _password2.Any(char.IsDigit))
+        {
+            _passwordContainsNumber = "color: green";
+            passwordContainsNumber = true;
+        }
+        else
+        {
+            _passwordContainsNumber = "color: grey";
+        }
+
+        if (_password1.Any(char.IsSymbol) && _password2.Any(char.IsSymbol))
+        {
+            _passwordContainsSpecialCharacter = "color: green";
+            passwordContainsSpecialCharacter = true;
+        }
+        else
+        {
+            _passwordContainsSpecialCharacter = "color: grey";
+        }
+
+        if (equalPasswords && minimumPasswordLength && passwordContainsNumber && passwordContainsCapitalLetter && passwordContainsSpecialCharacter)
+        {
+            PasswordValidated = true;
+        }
+
         return Task.CompletedTask;
     }
 }
