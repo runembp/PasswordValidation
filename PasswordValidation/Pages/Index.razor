@@ -1,0 +1,39 @@
+﻿@page "/"
+
+<form>
+    <fieldset class="border p-3">
+        <p>Password Validation</p>
+        <label>
+            Password #1
+        </label>
+        <br/>
+        <input type="password" @bind="@_password1" @bind:event="oninput" onchange="@ValidatePassword()"/>
+        <br/>
+        <label>
+            Password #2
+        </label>
+        <br/>
+        <input type="password" @bind="@_password2" @bind:event="oninput" onchange="@ValidatePassword()" />
+    </fieldset>
+    
+    <br/>
+    
+    <p>Passwords must be the same</p>
+    <p>Passwords must be atleast 8 digits long</p>
+    <p>Passwords must contain atleast 1 number</p>
+    <p>Passwords must contain atleast 1 special character</p>
+
+</form>
+
+@code
+{
+    private string _password1 = string.Empty; 
+    private string _password2 = string.Empty;
+
+    private Task ValidatePassword()
+    {
+        Console.WriteLine("Boop");
+        
+        return Task.CompletedTask;
+    }
+}
